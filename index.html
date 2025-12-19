@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SHIVA.IM - The Eternal Dance</title>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+  
+  <script type="text/babel">
+    const { useEffect, useRef, useState } = React;
+
+    const ShivaMonument = () => {
+      const canvasRef = useRef(null);
+      const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+      const [mouseVelocity, setMouseVelocity] = useState(0);
+      const [showModal, setShowModal] = useState(false);
+      const animationRef = useRef(null);
+      const timeRef = useRef(0);
+      const particlesRef = useRef([]);
+      const lastMousePos = useRef({ x: 0, y: 0 });
+      const flameRingRef = useRef([]);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    
+    const setCanvasSize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    setCanvasSize();
+    window.addEventListener('resize', setCanvasSize);
+
+    // Initialize flame ring
+    const initFlameRing = () => {
+      flameRingRef.current = [];
+      for (let i = 0; i < 120; i++) {
+        flameRingRef.current.push({
+          angle: (i / 120) * Math.PI * 2,
+          baseRadius: 280,
+          flameHeight: Math.random() * 40 + 30,
+          phase: Math.random() * Math.PI * 2,
+          speed: 0.02 + Math.random() * 0.02
+        });
+      }
+    };
+    initFlameRing();
+
+    // Initialize destruction/creation particles
+    const initParticles = () => {
+      particlesRef.current = [];
+      for (let i = 0; i < 200; i++) {
+        particlesRef.current.push({
+          angle: Math.random() * Math.PI * 2,
+          radius: Math.random() * 50 + 20,
+          speed: (Math.random() - 0.5) * 0.02,
+          size: Math.random() * 3 + 1,
+          lifetime: Math.random(),
+          maxLifetime: Math.random() * 100 + 50,
+          direction: Math.random() > 0.5 ? 1 : -1, // inward or outward
+          color: Math.random() > 0.5 ? 'creation' : 'destruction'
+        });
+      }
+    };
+    initParticles();
+
+    const drawFlameRing = (centerX, centerY, time, intensity) => {
+      flameRingRef.current.forEach((flame, i) => {
+        flame.phase += flame.speed;
+        const radius = flame.baseRadius + Math.sin(flame.phase) * 20;
+        const height = flame.flameHeight * (1 + intensity * 0.5) + Math.sin(time * 0.003 + i * 0.1) * 15;
+        
+        const x = centerX + Math.cos(flame.angle) * radius;
+        const y = centerY + Math.sin(flame.angle) * radius;
+        
+        const outerX = centerX + Math.cos(flame.angle) * (radius + height);
+        const outerY = centerY + Math.sin(flame.angle) * (radius + height);
+
+        // Flame gradient
+        const gradient = ctx.createLinearGradient(x, y, outerX, outerY);
+        gradient.addColorStop(0, `rgba(255, 120, 0, ${0.8 + intensity * 0.2})`);
+        gradient.addColorStop(0.4, `rgba(255, 180, 50, ${0.6 + intensity * 0.2})`);
+        gradient.addColorStop(0.7, `rgba(255, 220, 100, ${0.4 + intensity * 0.1})`);
+        gradient.addColorStop(1, 'rgba(255, 255, 200, 0)');
+
+        ctx.beginPath();
+        const flameWidth = 8 + intensity * 4;
+        ctx.moveTo(x - flameWidth / 2, y);
+        ctx.quadraticCurveTo(
+          (x + outerX) / 2 + Math.sin(time * 0.005 + i) * 10,
+          (y + outerY) / 2,
+          outerX,
+          outerY
+        );
+        ctx.lineTo(outerX, outerY);
+        ctx.quadraticCurveTo(
+          (x + outerX) / 2 - Math.sin(time * 0.005 + i) * 10,
+          (y + outerY) / 2,
+          x + flameWidth / 2,
+          y
+        );
+        ctx.closePath();
+        ctx.fillStyle = gradient;
+        ctx.fill();
+      });
+    };
+
+    const drawDanceParticles = (centerX, centerY, time, intensity) => {
+      particlesRef.current.forEach((particle) => {
+        // Spiral motion
+        particle.radius += particle.direction * (2 + intensity * 3);
+        particle.angle += 0.05 * particle.direction;
+        particle.lifetime += 1;
+
+        // Reset particles
+        if (particle.radius > 300 || particle.radius < 10 || particle.lifetime > particle.maxLifetime) {
+          particle.radius = 20;
+          particle.angle = Math.random() * Math.PI * 2;
+          particle.lifetime = 0;
+          particle.direction = Math.random() > 0.5 ? 1 : -1;
+          particle.color = Math.random() > 0.5 ? 'creation' : 'destruction';
+        }
+
+        const x = centerX + Math.cos(particle.angle) * particle.radius;
+        const y = centerY + Math.sin(particle.angle) * particle.radius;
+
+        const life = 1 - (particle.lifetime / particle.maxLifetime);
+        
+        ctx.beginPath();
+        ctx.arc(x, y, particle.size * life, 0, Math.PI * 2);
+        
+        if (particle.color === 'creation') {
+          ctx.fillStyle = `rgba(100, 200, 255, ${life * (0.6 + intensity * 0.3)})`;
+        } else {
+          ctx.fillStyle = `rgba(255, 100, 80, ${life * (0.6 + intensity * 0.3)})`;
+        }
+        ctx.fill();
+
+        // Trail effect
+        if (particle.size > 2) {
+          ctx.beginPath();
+          const trailX = centerX + Math.cos(particle.angle - 0.1 * particle.direction) * (particle.radius - 10);
+          const trailY = centerY + Math.sin(particle.angle - 0.1 * particle.direction) * (particle.radius - 10);
+          ctx.moveTo(x, y);
+          ctx.lineTo(trailX, trailY);
+          ctx.strokeStyle = particle.color === 'creation' 
+            ? `rgba(100, 200, 255, ${life * 0.3})` 
+            : `rgba(255, 100, 80, ${life * 0.3})`;
+          ctx.lineWidth = 1;
+          ctx.stroke();
+        }
+      });
+    };
+
+    const drawDamaru = (centerX, centerY, time, intensity) => {
+      // Drum beat ripples
+      const beatFrequency = 60 - intensity * 20; // Faster beats with more intensity
+      const beat = Math.floor(time / beatFrequency) % 2;
+      
+      if (time % beatFrequency < 5) {
+        const ripples = 3;
+        for (let i = 0; i < ripples; i++) {
+          const rippleTime = (time % beatFrequency) + i * 15;
+          const rippleRadius = rippleTime * 8;
+          const opacity = Math.max(0, 1 - rippleTime / 60);
+          
+          ctx.beginPath();
+          ctx.arc(centerX, centerY, rippleRadius, 0, Math.PI * 2);
+          ctx.strokeStyle = `rgba(255, 255, 255, ${opacity * 0.4})`;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      }
+
+      // Trishula (trident) rotating in the center
+      const trishulRotation = time * 0.003;
+      const trishulLength = 60 + Math.sin(time * 0.005) * 10;
+      
+      for (let prong = -1; prong <= 1; prong++) {
+        const angle = trishulRotation + (prong * Math.PI / 6);
+        const x = centerX + Math.cos(angle) * trishulLength;
+        const y = centerY + Math.sin(angle) * trishulLength;
+        
+        ctx.beginPath();
+        ctx.moveTo(centerX, centerY);
+        ctx.lineTo(x, y);
+        
+        const gradient = ctx.createLinearGradient(centerX, centerY, x, y);
+        gradient.addColorStop(0, 'rgba(200, 220, 255, 0.8)');
+        gradient.addColorStop(1, 'rgba(150, 180, 255, 0.3)');
+        ctx.strokeStyle = gradient;
+        ctx.lineWidth = 3;
+        ctx.stroke();
+
+        // Prong tips
+        ctx.beginPath();
+        ctx.arc(x, y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(200, 220, 255, 0.9)';
+        ctx.fill();
+      }
+
+      // Central power point (third eye)
+      ctx.beginPath();
+      ctx.arc(centerX, centerY, 8 + Math.sin(time * 0.01) * 2, 0, Math.PI * 2);
+      const eyeGlow = ctx.createRadialGradient(centerX, centerY, 0, centerX, centerY, 20);
+      eyeGlow.addColorStop(0, 'rgba(255, 255, 255, 1)');
+      eyeGlow.addColorStop(0.5, `rgba(150, 200, 255, ${0.8 + intensity * 0.2})`);
+      eyeGlow.addColorStop(1, 'rgba(100, 150, 255, 0)');
+      ctx.fillStyle = eyeGlow;
+      ctx.fill();
+    };
+
+    const animate = () => {
+      timeRef.current += 16;
+      const time = timeRef.current;
+      
+      // Dark cosmic background with blue undertones
+      ctx.fillStyle = 'rgba(5, 10, 25, 0.92)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+
+      // Calculate intensity from mouse velocity
+      const intensity = Math.min(mouseVelocity / 20, 1);
+
+      // Draw the flame ring (prabhamandala)
+      drawFlameRing(centerX, centerY, time, intensity);
+
+      // Draw creation/destruction particle dance
+      drawDanceParticles(centerX, centerY, time, intensity);
+
+      // Draw damaru rhythm and trishula
+      drawDamaru(centerX, centerY, time, intensity);
+
+      // User interaction line
+      if (intensity > 0.1) {
+        const dx = mousePos.x - centerX;
+        const dy = mousePos.y - centerY;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        
+        if (distance > 50) {
+          ctx.beginPath();
+          ctx.moveTo(centerX, centerY);
+          ctx.lineTo(mousePos.x, mousePos.y);
+          const lineGradient = ctx.createLinearGradient(centerX, centerY, mousePos.x, mousePos.y);
+          lineGradient.addColorStop(0, `rgba(150, 200, 255, ${intensity * 0.6})`);
+          lineGradient.addColorStop(1, `rgba(255, 150, 100, ${intensity * 0.3})`);
+          ctx.strokeStyle = lineGradient;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+        }
+      }
+
+      animationRef.current = requestAnimationFrame(animate);
+    };
+
+    animate();
+
+    return () => {
+      window.removeEventListener('resize', setCanvasSize);
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+    };
+  }, [mousePos, mouseVelocity]);
+
+  const handleMouseMove = (e) => {
+    const dx = e.clientX - lastMousePos.current.x;
+    const dy = e.clientY - lastMousePos.current.y;
+    const velocity = Math.sqrt(dx * dx + dy * dy);
+    
+    setMouseVelocity(velocity);
+    setMousePos({ x: e.clientX, y: e.clientY });
+    lastMousePos.current = { x: e.clientX, y: e.clientY };
+  };
+
+  return (
+    <div 
+      className="relative w-screen h-screen overflow-hidden bg-gray-900"
+      onMouseMove={handleMouseMove}
+    >
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0"
+      />
+      
+      <div className="absolute top-8 left-1/2 transform -translate-x-1/2 text-center">
+        <h1 
+          className="text-4xl font-light text-white opacity-80 tracking-widest mb-2 cursor-pointer hover:opacity-100 transition-opacity duration-300"
+          onClick={() => setShowModal(true)}
+        >
+          SHIVA.IM
+        </h1>
+        <p className="text-sm text-gray-300 opacity-60 tracking-wide pointer-events-none">
+          I AM SHIVA • THE ETERNAL DANCE
+        </p>
+      </div>
+
+      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 text-center pointer-events-none max-w-md px-4">
+        <p className="text-xs text-gray-400 opacity-70 leading-relaxed">
+          Move swiftly to intensify the cosmic dance.<br/>
+          The ring of flames holds the rhythm of creation and destruction,<br/>
+          the eternal transformation that sustains all existence.
+        </p>
+      </div>
+
+      {/* Artist Statement Modal */}
+      {showModal && (
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4"
+          onClick={() => setShowModal(false)}
+        >
+          <div 
+            className="bg-gray-900 border border-gray-700 rounded-lg max-w-3xl max-h-[90vh] overflow-y-auto p-8 relative"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              onClick={() => setShowModal(false)}
+              className="absolute top-4 right-4 text-gray-400 hover:text-white text-2xl"
+            >
+              ×
+            </button>
+
+            <h2 className="text-3xl font-light text-white mb-6 tracking-wide">
+              SHIVA.IM: Artist Statement
+            </h2>
+
+            <div className="space-y-6 text-gray-300 leading-relaxed">
+              <section>
+                <h3 className="text-xl text-blue-300 mb-3 font-light">Who is Shiva?</h3>
+                <p className="mb-3">
+                  Shiva is the cosmic dancer, the lord of transformation in Hindu philosophy. As one of the 
+                  principal deities in the Trimurti alongside Brahma the creator and Vishnu the preserver, 
+                  Shiva embodies the necessary force of dissolution and regeneration that allows the universe 
+                  to continually renew itself.
+                </p>
+                <p className="mb-3">
+                  In his most iconic form as Nataraja—the Lord of the Dance—Shiva performs the Ananda Tandava, 
+                  the cosmic dance of bliss that simultaneously creates and destroys the universe. One hand holds 
+                  the damaru drum whose beat maintains the rhythm of creation; another holds the flame of 
+                  dissolution. He dances within a ring of fire (prabhamandala), one foot raised in grace, 
+                  the other crushing the demon of ignorance.
+                </p>
+                <p>
+                  Shiva represents the paradox at the heart of existence: that death enables life, that endings 
+                  are beginnings, that transformation is the only constant. He is both the ascetic meditator 
+                  on Mount Kailash and the wild dancer of cosmic fury—stillness and motion unified.
+                </p>
+              </section>
+
+              <section>
+                <h3 className="text-xl text-blue-300 mb-3 font-light">The Eternal Dance: The Concept</h3>
+                <p className="mb-3">
+                  This digital monument explores Shiva as Nataraja, the cosmic dancer whose movement sustains 
+                  reality itself. Unlike brahma.im's gentle unfolding emergence, shiva.im pulses with kinetic 
+                  energy—the fierce rhythm of transformation that makes space for the new by releasing the old.
+                </p>
+                <p className="mb-3">
+                  The dance never stops. In every moment, something is being created and something is being 
+                  destroyed. The monument visualizes this as simultaneous spiraling motions—particles flowing 
+                  inward (destruction/dissolution) and outward (creation/manifestation) at once, held within 
+                  the ring of cosmic fire.
+                </p>
+                <p>
+                  "I AM SHIVA" invites recognition that we too are agents of transformation—that endings we 
+                  facilitate make space for new beginnings, that what we release allows new growth.
+                </p>
+              </section>
+
+              <section>
+                <h3 className="text-xl text-blue-300 mb-3 font-light">Visual Language & Symbolism</h3>
+                
+                <div className="space-y-4 ml-4">
+                  <div>
+                    <h4 className="text-blue-200 font-light mb-1">The Ring of Fire (Prabhamandala)</h4>
+                    <p className="text-sm">
+                      120 individual flames form the cosmic circle within which Shiva dances. Each flame pulses 
+                      independently, creating an organic, living boundary. This ring represents the edge of the 
+                      manifest universe, the threshold between form and formlessness, the container that holds 
+                      the sacred dance of existence.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-blue-200 font-light mb-1">Dual Spiral Dance</h4>
+                    <p className="text-sm">
+                      Particles spiral both inward and outward simultaneously—blue particles represent creative 
+                      force emerging, orange-red particles represent dissolution returning to source. This 
+                      visualizes Shiva's simultaneous creation and destruction, showing that these aren't 
+                      sequential phases but unified aspects of a single eternal process.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-blue-200 font-light mb-1">The Damaru Rhythm</h4>
+                    <p className="text-sm">
+                      Periodic ripples emanate from the center like drum beats—the cosmic pulse that maintains 
+                      the rhythm of space-time itself. In Hindu cosmology, the damaru's beat structures reality, 
+                      giving form to the formless. These visual pulses represent how consciousness creates 
+                      pattern and meaning through rhythmic repetition.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-blue-200 font-light mb-1">The Trishula (Trident)</h4>
+                    <p className="text-sm">
+                      Three prongs rotate at the center, representing Shiva's trident—symbol of his power over 
+                      the three gunas (qualities of nature), the three times (past, present, future), and the 
+                      three realms (physical, mental, spiritual). Its rotation represents the constant flux of 
+                      existence under Shiva's governance.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-blue-200 font-light mb-1">The Third Eye</h4>
+                    <p className="text-sm">
+                      The luminous center point represents Shiva's third eye—the eye of wisdom that burns away 
+                      illusion and ignorance. This is the still point at the center of the cosmic dance, the 
+                      eternal witness consciousness that remains unchanged while all else transforms around it.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-blue-200 font-light mb-1">Dynamic Color Palette</h4>
+                    <p className="text-sm">
+                      Deep cosmic blues suggest the void of potentiality and Shiva's association with the night 
+                      sky. Fierce oranges and reds evoke the transformative fire of destruction. Cool blues for 
+                      creation, warm reds for dissolution—the full spectrum of existence held in dynamic tension.
+                    </p>
+                  </div>
+
+                  <div>
+                    <h4 className="text-blue-200 font-light mb-1">Velocity-Based Interaction</h4>
+                    <p className="text-sm">
+                      Your movement speed determines the dance's intensity. Swift motion creates fierce 
+                      transformation; stillness allows contemplative grace. This mirrors how Shiva contains 
+                      both the wild Rudra (storm god) and the meditative yogi—your engagement determines 
+                      which aspect manifests. You don't just observe the dance; your energy becomes part of 
+                      its rhythm.
+                    </p>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h3 className="text-xl text-blue-300 mb-3 font-light">Destruction as Sacred Act</h3>
+                <p className="mb-3">
+                  Western culture often views destruction negatively, but Shiva teaches that dissolution is 
+                  sacred, necessary, and ultimately creative. What must end so something new can begin? What 
+                  patterns need to die so fresh growth can emerge?
+                </p>
+                <p>
+                  This monument honors destruction not as nihilism but as the prerequisite for renewal. The 
+                  flames don't consume maliciously—they purify, transform, make space. Every particle that 
+                  spirals inward to dissolution creates the opening for a new particle to spiral outward into 
+                  manifestation.
+                </p>
+              </section>
+
+              <section>
+                <h3 className="text-xl text-blue-300 mb-3 font-light">The Dance That Never Stops</h3>
+                <p>
+                  In Hindu cosmology, if Shiva stops dancing, the universe ceases to exist. This piece 
+                  embodies that eternal motion—there is no pause, no rest, only the perpetual rhythm of 
+                  transformation. Even when you leave, the dance continues. It danced before you arrived, 
+                  and it will dance after you depart. You are simply another witness to the eternal 
+                  performance, another aperture through which the cosmos observes its own magnificent 
+                  becoming and unbecoming.
+                </p>
+              </section>
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-gray-700 text-center space-y-3">
+              <p className="text-sm text-gray-500">
+                Created with reverence for the sacred traditions<br/>
+                that have honored transformation across millennia
+              </p>
+              <p className="text-sm text-gray-400">
+                A digital monument by{' '}
+                <a 
+                  href="https://unearth.im" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-blue-300 hover:text-blue-200 transition-colors underline"
+                >
+                  unearth.im
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
+
+ReactDOM.render(<ShivaMonument />, document.getElementById('root'));
+  </script>
+</body>
+</html>

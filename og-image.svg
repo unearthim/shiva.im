@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Radial gradient for background -->
+    <radialGradient id="bgGradient" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#0a1628;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#050a19;stop-opacity:1" />
+    </radialGradient>
+    
+    <!-- Gradient for flames -->
+    <linearGradient id="flameGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#ff7800;stop-opacity:0.9" />
+      <stop offset="50%" style="stop-color:#ffb432;stop-opacity:0.7" />
+      <stop offset="100%" style="stop-color:#ffdc64;stop-opacity:0.3" />
+    </linearGradient>
+    
+    <!-- Glow for third eye -->
+    <radialGradient id="eyeGlow" cx="50%" cy="50%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#96c8ff;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#6496ff;stop-opacity:0" />
+    </radialGradient>
+    
+    <!-- Trident gradient -->
+    <linearGradient id="trishulGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#c8dcff;stop-opacity:0.9" />
+      <stop offset="100%" style="stop-color:#96b4ff;stop-opacity:0.5" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- Cosmic particles -->
+  <circle cx="150" cy="100" r="2" fill="#64c8ff" opacity="0.6"/>
+  <circle cx="1050" cy="150" r="1.5" fill="#ff6450" opacity="0.5"/>
+  <circle cx="200" cy="500" r="2.5" fill="#64c8ff" opacity="0.4"/>
+  <circle cx="1100" cy="450" r="2" fill="#ff6450" opacity="0.6"/>
+  <circle cx="100" cy="300" r="1.5" fill="#96c8ff" opacity="0.5"/>
+  <circle cx="1150" cy="250" r="2" fill="#ffa050" opacity="0.4"/>
+  <circle cx="250" cy="200" r="1" fill="#64c8ff" opacity="0.7"/>
+  <circle cx="950" cy="500" r="1.5" fill="#ff7850" opacity="0.5"/>
+  
+  <!-- Flame ring (simplified) -->
+  <g transform="translate(600, 315)">
+    <!-- Ring of flames -->
+    <g opacity="0.8">
+      <!-- Flames at various angles -->
+      <path d="M 0,-180 Q -8,-220 0,-240 Q 8,-220 0,-180 Z" fill="url(#flameGradient)"/>
+      <path d="M 127,-127 Q 120,-167 127,-187 Q 134,-167 127,-127 Z" fill="url(#flameGradient)"/>
+      <path d="M 180,0 Q 173,-40 180,-60 Q 187,-40 180,0 Z" fill="url(#flameGradient)"/>
+      <path d="M 127,127 Q 120,87 127,67 Q 134,87 127,127 Z" fill="url(#flameGradient)"/>
+      <path d="M 0,180 Q -8,140 0,120 Q 8,140 0,180 Z" fill="url(#flameGradient)"/>
+      <path d="M -127,127 Q -134,87 -127,67 Q -120,87 -127,127 Z" fill="url(#flameGradient)"/>
+      <path d="M -180,0 Q -187,-40 -180,-60 Q -173,-40 -180,0 Z" fill="url(#flameGradient)"/>
+      <path d="M -127,-127 Q -134,-167 -127,-187 Q -120,-167 -127,-127 Z" fill="url(#flameGradient)"/>
+      
+      <!-- Additional flames for fuller ring -->
+      <path d="M 64,-170 Q 60,-200 64,-215 Q 68,-200 64,-170 Z" fill="url(#flameGradient)" opacity="0.9"/>
+      <path d="M 170,-64 Q 166,-94 170,-109 Q 174,-94 170,-64 Z" fill="url(#flameGradient)" opacity="0.9"/>
+      <path d="M 170,64 Q 166,34 170,19 Q 174,34 170,64 Z" fill="url(#flameGradient)" opacity="0.9"/>
+      <path d="M 64,170 Q 60,140 64,125 Q 68,140 64,170 Z" fill="url(#flameGradient)" opacity="0.9"/>
+      <path d="M -64,170 Q -68,140 -64,125 Q -60,140 -64,170 Z" fill="url(#flameGradient)" opacity="0.9"/>
+      <path d="M -170,64 Q -174,34 -170,19 Q -166,34 -170,64 Z" fill="url(#flameGradient)" opacity="0.9"/>
+      <path d="M -170,-64 Q -174,-94 -170,-109 Q -166,-94 -170,-64 Z" fill="url(#flameGradient)" opacity="0.9"/>
+      <path d="M -64,-170 Q -68,-200 -64,-215 Q -60,-200 -64,-170 Z" fill="url(#flameGradient)" opacity="0.9"/>
+    </g>
+    
+    <!-- Trishula (Trident) at center -->
+    <g stroke="url(#trishulGradient)" stroke-width="4" fill="none" stroke-linecap="round">
+      <!-- Center prong -->
+      <line x1="0" y1="0" x2="0" y2="-70"/>
+      <!-- Left prong -->
+      <line x1="0" y1="0" x2="-50" y2="-60" transform="rotate(-15 0 0)"/>
+      <!-- Right prong -->
+      <line x1="0" y1="0" x2="50" y2="-60" transform="rotate(15 0 0)"/>
+    </g>
+    
+    <!-- Prong tips -->
+    <circle cx="0" cy="-70" r="5" fill="#c8dcff" opacity="0.9"/>
+    <circle cx="-43" cy="-63" r="5" fill="#c8dcff" opacity="0.9"/>
+    <circle cx="43" cy="-63" r="5" fill="#c8dcff" opacity="0.9"/>
+    
+    <!-- Third eye at center -->
+    <circle cx="0" cy="0" r="12" fill="url(#eyeGlow)"/>
+    <circle cx="0" cy="0" r="6" fill="#ffffff"/>
+    
+    <!-- Subtle ripples -->
+    <circle cx="0" cy="0" r="50" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.2"/>
+    <circle cx="0" cy="0" r="80" fill="none" stroke="#64c8ff" stroke-width="1" opacity="0.15"/>
+  </g>
+  
+  <!-- Creation/destruction particles (simplified) -->
+  <g opacity="0.7">
+    <!-- Blue creation particles (spiraling outward) -->
+    <circle cx="520" cy="250" r="3" fill="#64c8ff"/>
+    <circle cx="480" cy="380" r="2.5" fill="#64c8ff"/>
+    <circle cx="720" cy="290" r="2" fill="#64c8ff"/>
+    <circle cx="650" cy="420" r="3" fill="#64c8ff"/>
+    
+    <!-- Orange destruction particles (spiraling inward) -->
+    <circle cx="680" cy="220" r="2.5" fill="#ff6450"/>
+    <circle cx="550" cy="350" r="3" fill="#ff7850"/>
+    <circle cx="470" cy="280" r="2" fill="#ffa050"/>
+    <circle cx="730" cy="360" r="2.5" fill="#ff8850"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="600" y="520" font-family="Arial, sans-serif" font-size="72" font-weight="300" 
+        fill="#ffffff" text-anchor="middle" letter-spacing="12" opacity="0.95">
+    SHIVA.IM
+  </text>
+  
+  <!-- Subtitle -->
+  <text x="600" y="565" font-family="Arial, sans-serif" font-size="16" 
+        fill="#cbd5e1" text-anchor="middle" letter-spacing="4" opacity="0.75">
+    THE ETERNAL DANCE
+  </text>
+</svg>
