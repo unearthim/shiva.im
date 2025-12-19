@@ -1,9 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "VisualArtwork",
+        "@id": "https://shiva.im/#content",
+        "url": "https://shiva.im",
+        "name": "SHIVA.IM: The Eternal Dance",
+        "description": "An interactive digital monument exploring Shiva as Nataraja, the cosmic dancer whose eternal movement sustains reality through the sacred rhythms of creation and destruction.",
+        "inLanguage": "en-US",
+        "datePublished": "2025-12-19",
+        "artform": "Digital Interactive Art",
+        "artMedium": "HTML Canvas, JavaScript, Generative Animation",
+        "publisher": { "@id": "https://unearth.im/#organization" },
+        "isPartOf": [
+          { "@id": "https://shiva.im/#website" },
+          { "@id": "https://unearth.im/#collection" }
+        ],
+        "author": [
+          { "@id": "https://josiest.com/#person" },
+          { "@id": "https://felixvelas.co/#person" }
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://shiva.im/#website",
+        "url": "https://shiva.im",
+        "name": "SHIVA.IM",
+        "publisher": { "@id": "https://unearth.im/#organization" }
+      },
+      {
+        "@type": "Collection",
+        "@id": "https://unearth.im/#collection",
+        "name": "Museum of Digital Archaeology",
+        "description": "A curated constellation of digital monuments and philosophical landmarks.",
+        "publisher": { "@id": "https://unearth.im/#organization" }
+      },
+      {
+        "@type": "Organization",
+        "@id": "https://unearth.im/#organization",
+        "name": "Unearth Heritage Foundry",
+        "alternateName": ["Unearth Foundry", "Archive & Anvil"],
+        "url": "https://unearth.im",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://unearth.im/favicon-32x32.png"
+        },
+        "foundingDate": "2024",
+        "sameAs": [
+          "https://twitter.com/unearthim",
+          "https://github.com/unearthim"
+        ]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://josiest.com/#person",
+        "name": "Josie Jefferson",
+        "url": "https://josiest.com",
+        "jobTitle": "Digital Archaeologist & Trust Architect",
+        "affiliation": { "@id": "https://unearth.im/#organization" },
+        "sameAs": ["https://notjojo.im"]
+      },
+      {
+        "@type": "Person",
+        "@id": "https://felixvelas.co/#person",
+        "name": "Felix Velasco",
+        "url": "https://felixvelas.co",
+        "jobTitle": "Trust Architect & Digital Archaeologist",
+        "affiliation": { "@id": "https://unearth.im/#organization" },
+        "sameAs": ["https://www.linkedin.com/in/felix-velasco-b793015"]
+      }
+    ]
+  }
+  </script>
+
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SHIVA.IM - The Eternal Dance</title>
+
+  <!-- === 1. Primary Meta Tags === -->
+  <title>The Eternal Dance | SHIVA.IM</title>
+  <meta name="title" content="The Eternal Dance | SHIVA.IM">
+  <meta name="description" content="An interactive digital monument exploring Shiva as Nataraja, the cosmic dancer whose eternal movement sustains reality through creation and destruction.">
+  <meta name="keywords" content="shiva, nataraja, cosmic dance, digital monument, creation destruction, hinduism, visual art, interactive art, generative art, sacred geometry">
+  <meta name="author" content="shiva.im (by unearth heritage foundry - archive & anvil - unearth.im)">
+  <meta name="robots" content="index, follow">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="language" content="English">
+  
+  <!-- === Canonical Link === -->
+  <link rel="canonical" href="https://shiva.im" />
+  
+  <!-- === 2. Webmention Endpoint === -->
+  <link rel="webmention" href="https://webmention.io/unearth.im/webmention" />
+
+  <!-- === 3. Open Graph / Facebook === -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://shiva.im">
+  <meta property="og:title" content="The Eternal Dance | SHIVA.IM">
+  <meta property="og:description" content="An interactive digital monument exploring Shiva as Nataraja, the cosmic dancer whose eternal movement sustains reality through creation and destruction.">
+  <meta property="og:image" content="https://shiva.im/og-image.png">
+  <meta property="og:site_name" content="SHIVA.IM">
+
+  <!-- === 4. Twitter Card === -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://shiva.im">
+  <meta property="twitter:title" content="The Eternal Dance | SHIVA.IM">
+  <meta property="twitter:description" content="An interactive digital monument exploring Shiva as Nataraja, the cosmic dancer whose eternal movement sustains reality through creation and destruction.">
+  <meta property="twitter:image" content="https://shiva.im/og-image.png">
+
+  <!-- === 5. Favicons === -->
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="alternate icon" href="/favicon.ico">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+
+  <!-- === Brand Color Meta Tags === -->
+  <meta name="theme-color" content="#050a19">
+  <meta name="msapplication-TileColor" content="#ff7800">
+
   <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
   <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
   <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
